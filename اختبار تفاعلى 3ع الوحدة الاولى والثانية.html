@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mr. Alaa El-Naggar - Interactive English Quiz</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+        :root {
+            --primary-color: #485DA6;
+            --secondary-color: #00BF98;
+            --background-start: #6d327c;
+            --background-end: #36C486;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --text-color: #333;
+            --correct-bg: #e0f8e9;
+            --correct-border: #74d693;
+            --incorrect-bg: #fde2e2;
+            --incorrect-border: #f48a8a;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--background-start), var(--primary-color), var(--background-end));
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #fff;
+        }
+
+        header h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+        }
+
+        header p {
+            font-size: 1.5rem;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+
+        .student-name-container {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px var(--shadow-color);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .student-name-container label {
+            display: block;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        #studentName {
+            width: 100%;
+            max-width: 400px;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        #studentName:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 8px rgba(72, 93, 166, 0.5);
+        }
+
+        .question-card {
+            background: var(--card-bg);
+            padding: 25px 30px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 6px 20px var(--shadow-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-left: 5px solid transparent;
+        }
+
+        .question-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .question-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+        
+        .question-text {
+             font-size: 1.1rem;
+             margin-bottom: 15px;
+        }
+        
+        .dialogue, .text-passage {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            display: block;
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            transition: all 0.2s ease;
+        }
+
+        .option:hover {
+            background-color: #eef2ff;
+            border-color: var(--primary-color);
+        }
+        
+        .option input[type="radio"] {
+            margin-right: 12px;
+            transform: scale(1.2);
+        }
+
+        .text-input, textarea {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            margin-top: 5px;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .text-input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 8px rgba(72, 93, 166, 0.5);
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .submit-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .submit-btn:hover {
+            background-color: #3a4a8a;
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(0,0,0,0.3);
+        }
+        
+        .whatsapp-btn {
+            background-color: #25D366;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: none; /* Hidden by default */
+            margin-top: 20px;
+        }
+
+        .whatsapp-btn:hover {
+            background-color: #1ebe57;
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(0,0,0,0.3);
+        }
+
+        #results {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px var(--shadow-color);
+            margin-top: 40px;
+            text-align: center;
+        }
+        
+        #results h2 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        #feedback {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        /* Highlighting styles */
+        .correct, .option.correct, .text-input.correct, textarea.correct {
+            background-color: var(--correct-bg) !important;
+            border-color: var(--correct-border) !important;
+        }
+
+        .incorrect, .option.incorrect, .text-input.incorrect, textarea.incorrect {
+            background-color: var(--incorrect-bg) !important;
+            border-color: var(--incorrect-border) !important;
+        }
+        
+        .correct-answer-display {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #e1f3ff;
+            border: 1px solid #b3d9ff;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #0056b3;
+        }
+        
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+            header p {
+                font-size: 1.2rem;
+            }
+            .container {
+                padding: 10px;
+            }
+            .question-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>👉 Mr. Alaa El-Naggar مستر علاء النجار</h1>
+            <p>Interactive English Quiz</p>
+        </header>
+
+        <div class="student-name-container">
+            <label for="studentName">Enter your name to start:</label>
+            <input type="text" id="studentName" placeholder="Your Full Name" required>
+        </div>
+
+        <form id="quizForm">
+            <div class="question-card" id="q1">
+                <p class="question-title">1. Finish the following dialogue:</p>
+                <div class="dialogue">
+                    <strong>Ali and Omar are talking about reading</strong>
+                    <p><strong>Ali:</strong> Hi Omar, do you like reading?</p>
+                    <p><strong>Omar:</strong> (1) <input type="text" id="d1" class="text-input" placeholder="Type your answer..."></p>
+                    <div id="feedback-d1"></div>
+                    <p><strong>Ali:</strong> (2) <input type="text" id="d2" class="text-input" placeholder="Type your answer..."></p>
+                    <div id="feedback-d2"></div>
+                    <p><strong>Omar:</strong> Because it helps us learn new things and new words.</p>
+                    <p><strong>Ali:</strong> (3) <input type="text" id="d3" class="text-input" placeholder="Type your answer..."></p>
+                    <div id="feedback-d3"></div>
+                    <p><strong>Omar:</strong> Yes, they can show us what is right and wrong.</p>
+                    <p><strong>Ali:</strong> (4) <input type="text" id="d4" class="text-input" placeholder="Type your answer..."></p>
+                    <div id="feedback-d4"></div>
+                    <p><strong>Omar:</strong> Of course! Reading makes us smarter, calmer, and gives us ideas.</p>
+                    <p><strong>Ali:</strong> (5) <input type="text" id="d5" class="text-input" placeholder="Type your answer..."></p>
+                    <div id="feedback-d5"></div>
+                </div>
+            </div>
+
+            <div class="question-card" id="q2">
+                <p class="question-title">2. Read and complete the text with words from the list:</p>
+                <div class="text-passage">
+                    <p style="font-weight: 600; text-align: center; color: var(--primary-color);">When - Since - died - problems - history - science</p>
+                    <p>Dr. Magdi Yacoub was born in Egypt in 1935. (1) <input type="text" class="text-input" id="f1"> he was young, he enjoyed reading about (2) <input type="text" class="text-input" id="f2"> and medicine. When his father's sister (3) <input type="text" class="text-input" id="f3"> from heart disease, Magdi felt very sad. He began to wonder how doctors could save people with heart (4) <input type="text" class="text-input" id="f4">.</p>
+                </div>
+                <div id="feedback-f1"></div><div id="feedback-f2"></div><div id="feedback-f3"></div><div id="feedback-f4"></div>
+            </div>
+
+            <div class="question-card" id="q3">
+                <p class="question-title">3. Read the following text then answer the questions:</p>
+                <div class="text-passage">
+                    <p>Once upon a time, there was a boy who became bored while he was watching the village sheep on the hillside. To get some fun, he shouted, "Wolf! Wolf! It is chasing the sheep." When the village people came quickly to help him, they found no wolf and the boy laughed at them. They advised him not to do that again.</p>
+                    <p>But later, there was a real wolf which came to attack the sheep. When the boy screamed for help, nobody went to help <span style="text-decoration: underline; font-weight: bold;">him</span>. The sheep were eaten. When he asked them why they didn't come for help. They told him "Nobody believes a liar."</p>
+                </div>
+                
+                <p class="question-text" style="font-weight:600;">A. Choose the correct answer from a, b, c or d:</p>
+                <div id="q3a">
+                    <p class="question-text">1. The main idea of the passage is that ......</p>
+                    <div class="options-container">
+                        <label class="option"><input type="radio" name="q3a1" value="a"> a. We shouldn't lie.</label>
+                        <label class="option"><input type="radio" name="q3a1" value="b"> b. It's no problem to lie.</label>
+                        <label class="option"><input type="radio" name="q3a1" value="c"> c. We should have fun.</label>
+                        <label class="option"><input type="radio" name="q3a1" value="d"> d. How to look after sheep?</label>
+                    </div>
+                </div>
+                <div id="q3b" style="margin-top: 20px;">
+                    <p class="question-text">2. In the end, the sheep ......</p>
+                    <div class="options-container">
+                        <label class="option"><input type="radio" name="q3a2" value="a"> a. were returned safely.</label>
+                        <label class="option"><input type="radio" name="q3a2" value="b"> b. were sold</label>
+                        <label class="option"><input type="radio" name="q3a2" value="c"> c. were eaten by the wolf.</label>
+                        <label class="option"><input type="radio" name="q3a2" value="d"> d. grew in number</label>
+                    </div>
+                </div>
+
+                <p class="question-text" style="font-weight:600; margin-top: 25px;">B. Answer the following questions:</p>
+                <div>
+                    <p class="question-text">3. What do you think of the boy?</p>
+                    <textarea id="q3b3" placeholder="Type your answer..."></textarea>
+                    <div id="feedback-q3b3"></div>
+
+                    <p class="question-text">4. Summarize the last paragraph in one sentence of your own words.</p>
+                    <textarea id="q3b4" placeholder="Type your answer..."></textarea>
+                    <div id="feedback-q3b4"></div>
+                    
+                    <p class="question-text">5. What do you learn from the story?</p>
+                    <textarea id="q3b5" placeholder="Type your answer..."></textarea>
+                    <div id="feedback-q3b5"></div>
+
+                    <p class="question-text">6. What does the underlined word "him" refer to?</p>
+                    <input type="text" class="text-input" id="q3b6" placeholder="Type your answer...">
+                    <div id="feedback-q3b6"></div>
+                </div>
+            </div>
+
+            <div class="question-card" id="q4">
+                <p class="question-title">4. Choose the correct answers from a, b, c, or d:</p>
+                <div id="q4a">
+                    <p class="question-text">1. To ...... is to find a solution to a problem.</p>
+                    <div class="options-container">
+                        <label class="option"><input type="radio" name="q4a1" value="a"> a. ignore</label>
+                        <label class="option"><input type="radio" name="q4a1" value="b"> b. lose</label>
+                        <label class="option"><input type="radio" name="q4a1" value="c"> c. resolve</label>
+                        <label class="option"><input type="radio" name="q4a1" value="d"> d. Communicate</label>
+                    </div>
+                </div>
+                <div id="q4b" style="margin-top:20px;">
+                    <p class="question-text">2. A ...... is a movement or action that shows emotion.</p>
+                    <div class="options-container">
+                        <label class="option"><input type="radio" name="q4a2" value="a"> a. gesture</label>
+                        <label class="option"><input type="radio" name="q4a2" value="b"> b. bond</label>
+                        <label class="option"><input type="radio" name="q4a2" value="c"> c. connection</label>
+                        <label class="option"><input type="radio" name="q4a2" value="d"> d. silence</label>
+                    </div>
+                </div>
+                 <div id="q4c" style="margin-top:20px;">
+                    <p class="question-text">3. It's important to be always kind and ......</p>
+                    <div class="options-container">
+                        <label class="option"><input type="radio" name="q4a3" value="a"> a. ugly</label>
+                        <label class="option"><input type="radio" name="q4a3" value="b"> b. selfish</label>
+                        <label class="option"><input type="radio" name="q4a3" value="c"> c. supportive</label>
+                        <label class="option"><input type="radio" name="q4a3" value="d"> d. negative</label>
+                    </div>
+                </div>
+                 <div id="q4d" style="margin-top:20px;">
+                    <p class="question-text">4. My manager asked me to finish what he said. This means he asked me to complete the ......</p>
+                    <div class="options-container">
+                        <label class="option"><input type="radio" name="q4a4" value="a"> a. tasks</label>
+                        <label class="option"><input type="radio" name="q4a4" value="b"> b. desks</label>
+                        <label class="option"><input type="radio" name="q4a4" value="c"> c. benches</label>
+                        <label class="option"><input type="radio" name="q4a4" value="d"> d. seats</label>
+                    </div>
+                </div>
+                <div id="q4e" style="margin-top:20px;">
+                    <p class="question-text">5. The antonym of "respect" is ......</p>
+                    <div class="options-container">
+                        <label class="option"><input type="radio" name="q4a5" value="a"> a. esteem</label>
+                        <label class="option"><input type="radio" name="q4a5" value="b"> b. support</label>
+                        <label class="option"><input type="radio" name="q4a5" value="c"> c. help</label>
+                        <label class="option"><input type="radio" name="q4a5" value="d"> d. disrespect</label>
+                    </div>
+                </div>
+                <div id="q4f" style="margin-top:20px;">
+                    <p class="question-text">6. A strong ...... means you know someone well.</p>
+                    <div class="options-container">
+                        <label class="option"><input type="radio" name="q4a6" value="a"> a. connection</label>
+                        <label class="option"><input type="radio" name="q4a6" value="b"> b. misunderstanding</label>
+                        <label class="option"><input type="radio" name="q4a6" value="c"> c. tone</label>
+                        <label class="option"><input type="radio" name="q4a6" value="d"> d. argument</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="question-card" id="q5">
+                <p class="question-title">5. Complete the sentences with the correct form of the word(s):</p>
+                 <p class="question-text">1. Jana <input type="text" class="text-input" id="c1" placeholder="(see)"> that movie already.</p>
+                 <div id="feedback-c1"></div>
+                 <p class="question-text">2. They <input type="text" class="text-input" id="c2" placeholder="(catch)"> the bus if they had run faster.</p>
+                 <div id="feedback-c2"></div>
+                 <p class="question-text">3. Habiba and Shahd <input type="text" class="text-input" id="c3" placeholder="(go)"> to the market. You can join them there.</p>
+                 <div id="feedback-c3"></div>
+                 <p class="question-text">4. If we <input type="text" class="text-input" id="c4" placeholder="(practice)"> more, we would have won the game.</p>
+                 <div id="feedback-c4"></div>
+                 <p class="question-text">5. The homework <input type="text" class="text-input" id="c5" placeholder="(do)"> yet.</p>
+                 <div id="feedback-c5"></div>
+            </div>
+            
+            <div class="button-container">
+                <button type="submit" class="submit-btn">Finish Quiz</button>
+            </div>
+        </form>
+
+        <div id="results" style="display: none;">
+            <h2 id="score"></h2>
+            <p id="feedback"></p>
+            <div class="button-container">
+                <button id="whatsappBtn" class="whatsapp-btn">📩 Send Your Result via WhatsApp</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const quizData = {
+            totalPoints: 26,
+            answers: {
+                d1: ["yes i do", "yes of course"],
+                d2: ["why is it important", "why do you like it"],
+                d3: ["can stories teach us lessons", "do they show us what is right and wrong"],
+                d4: ["does reading have other benefits", "are there other benefits"],
+                d5: ["i will start reading more", "that's great i will read more"],
+                f1: ["when"],
+                f2: ["science"],
+                f3: ["died"],
+                f4: ["problems"],
+                q3a1: "a",
+                q3a2: "c",
+                q3b3: ["he is a liar", "he is not honest", "he is dishonest"],
+                q3b4: ["nobody believes a liar so he lost his sheep", "people dont believe liars", "liars are not believed"],
+                q3b5: ["we should not lie", "i should always be honest", "honesty is important"],
+                q3b6: ["the boy"],
+                q4a1: "c",
+                q4a2: "a",
+                q4a3: "c",
+                q4a4: "a",
+                q4a5: "d",
+                q4a6: "a",
+                c1: ["has seen"],
+                c2: ["would have caught"],
+                c3: ["have gone"],
+                c4: ["had practiced", "had practised"],
+                c5: ["hasn't been done", "has not been done"],
+            }
+        };
+
+        const quizForm = document.getElementById('quizForm');
+        quizForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const studentName = document.getElementById('studentName').value.trim();
+            if (studentName === "") {
+                alert("Please enter your name before starting the quiz!");
+                document.getElementById('studentName').focus();
+                return;
+            }
+
+            let score = 0;
+            const allInputs = quizForm.querySelectorAll('input, textarea');
+            allInputs.forEach(input => {
+                input.classList.remove('correct', 'incorrect');
+                const feedbackEl = document.getElementById(`feedback-${input.id}`);
+                if (feedbackEl) feedbackEl.innerHTML = '';
+            });
+            document.querySelectorAll('.option').forEach(opt => opt.classList.remove('correct', 'incorrect'));
+            
+            // Grade Text/Textarea Inputs
+            const textInputs = ['d1', 'd2', 'd3', 'd4', 'd5', 'f1', 'f2', 'f3', 'f4', 'q3b3', 'q3b4', 'q3b5', 'q3b6', 'c1', 'c2', 'c3', 'c4', 'c5'];
+            textInputs.forEach(id => {
+                const inputEl = document.getElementById(id);
+                const userAnswer = inputEl.value.trim().toLowerCase().replace(/[.,?]/g, '');
+                const correctAnswers = quizData.answers[id];
+                const feedbackEl = document.getElementById(`feedback-${id}`);
+
+                if (correctAnswers.includes(userAnswer)) {
+                    score++;
+                    inputEl.classList.add('correct');
+                } else {
+                    inputEl.classList.add('incorrect');
+                    if(feedbackEl){
+                         feedbackEl.innerHTML = `<div class="correct-answer-display">Correct Answer: ${correctAnswers[0]}</div>`;
+                    }
+                }
+            });
+
+            // Grade Radio Inputs
+            const radioGroups = ['q3a1', 'q3a2', 'q4a1', 'q4a2', 'q4a3', 'q4a4', 'q4a5', 'q4a6'];
+            radioGroups.forEach(groupName => {
+                const selectedOption = document.querySelector(`input[name="${groupName}"]:checked`);
+                const correctAnswer = quizData.answers[groupName];
+                const options = document.querySelectorAll(`input[name="${groupName}"]`);
+
+                options.forEach(option => {
+                    const label = option.parentElement;
+                    if (option.value === correctAnswer) {
+                        label.classList.add('correct');
+                    }
+                });
+
+                if (selectedOption) {
+                    const label = selectedOption.parentElement;
+                    if (selectedOption.value === correctAnswer) {
+                        score++;
+                    } else {
+                        label.classList.add('incorrect');
+                    }
+                }
+            });
+
+            // Display results
+            const resultsDiv = document.getElementById('results');
+            const scoreEl = document.getElementById('score');
+            const feedbackEl = document.getElementById('feedback');
+            const whatsappBtn = document.getElementById('whatsappBtn');
+            
+            scoreEl.textContent = `Your Score: ${score} / ${quizData.totalPoints}`;
+            const percentage = (score / quizData.totalPoints) * 100;
+
+            if (percentage === 100) {
+                feedbackEl.textContent = "🌟 Excellent!";
+                feedbackEl.style.color = '#28a745';
+            } else if (percentage >= 75) {
+                feedbackEl.textContent = "👍 Good job!";
+                feedbackEl.style.color = '#17a2b8';
+            } else if (percentage >= 50) {
+                 feedbackEl.textContent = "💪 Good effort, keep practicing!";
+                 feedbackEl.style.color = '#ffc107';
+            } else {
+                feedbackEl.textContent = "💪 Keep practicing!";
+                feedbackEl.style.color = '#dc3545';
+            }
+
+            resultsDiv.style.display = 'block';
+            whatsappBtn.style.display = 'inline-block';
+            
+            whatsappBtn.onclick = function() {
+                const message = `Hello, I’m ${studentName}. My score is ${score}/${quizData.totalPoints}.`;
+                const whatsappUrl = `https://wa.me/201500073600?text=${encodeURIComponent(message)}`;
+                window.open(whatsappUrl, '_blank');
+            };
+            
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
+
+</body>
+</html>
